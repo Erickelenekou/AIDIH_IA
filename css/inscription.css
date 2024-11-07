@@ -1,0 +1,67 @@
+#bloc{
+    background-image:url("../assets/images/bghd.jpg");
+}
+#bloc_1{
+    border-radius: 0px 50% 50% 0px;
+    background-color: rgba(138, 190, 250, 0.7) ;
+} 
+#bloc_11{
+    margin-top: 40px;
+    margin-bottom: 40px;
+}
+#bloc_22{
+    margin-top: 40px;
+}
+#nous_sommes{
+    font-size: 20px;
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+form div{
+    margin-top: 40px;
+}
+form div:last-child{
+    margin: 40px;
+}
+
+a{
+    text-decoration: none;
+    color: rgba(248, 14, 14, 1);
+}
+input{
+    height: 45px;
+    background-color:  rgba(255, 255, 255, 0.65);
+}
+button{
+    border: none;
+    background-color: rgba(255, 255, 255, 0.65);
+    color: black;
+    height: 40px;
+}
+ #bloc_23{
+    border: 3px solid rgba(138, 190, 250, 1);
+    width: 150px;
+    background-color: rgba(255, 255, 255, 0.65);
+    height: 50px;
+   text-align: center;
+   line-height:50px ;
+    border-radius: 10px;
+    margin-left: 35%;
+}
+ #bloc_23 a{
+   color: black;
+}
+
+@media (width <= 1000px){
+    #bloc{
+        background-image: none;
+    }
+    #bloc_2{
+        display: none;
+    }   
+    #bloc_1{
+        border-radius: 5px;
+        width: 150%;
+    }
+}
