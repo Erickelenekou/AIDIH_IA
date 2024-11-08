@@ -1,3 +1,31 @@
+<?php
+ $host="localhost";
+ $dbname="aidih_ia";
+ $username="root";
+ $password="";
+ 
+ $conn=new PDO ("mysql:host=$host; dbname=$dbname",$username,$password);
+ $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+  if (isset($_POST['envoyer'])) {
+    $nom=htmlspecialchars($_POST['nom']);
+    $mot_de_passe=sha1($_POST['mot_de_passe']);
+
+      $sql="SELECT * FROM `inscription` WHERE nom=? AND mot_de_passe=?";
+      $lui=$conn->prepare($sql);
+      $lui->execute(array($nom,$mot_de_passe));
+
+      if ($lui->rowCount()>0) {
+        $_SESSION['email']=$nom;
+        $_SESSION['mot_de_passe']=$mot_de_passe;
+        header("location:../html/acceuil.html");
+      } else {
+        echo"<div class='text-center'>";
+        echo "email ou mot de passe incorrect. Veuillez ressayer.";
+      }    
+  }
+?>     
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,15 +49,15 @@
                                 <h2>Connectez-vous</h2>
                                 <span>Bienvenue</span>
                             </div>
-                            <form action="">
+                            <form action="" method="post">
                                 <div>
-                                    <input type="text" class="form-control" placeholder="Nom utilisateur" required>
+                                    <input type="text" class="form-control" name="nom" placeholder="Nom utilisateur" required>
                                 </div>
                                 <div>
-                                    <input type="password" class="form-control" placeholder="Mot de passe" required>
+                                    <input type="password" class="form-control" name="mot_de_passe" placeholder="Mot de passe" required>
                                 </div>
                                 <div class="text-center">
-                                    <button class=" col col-12 rounded-5">Se Connecter</button>
+                                    <button type="submit" name="envoyer" class="col col-12 rounded-5">Se Connecter</button>
                                 </div>
                             </form>
                         </div>
@@ -37,7 +65,7 @@
                 </div>
                 <div class="text-center" style="margin-top: 20px;">
                     <span>Nouveau?</span>
-                     <a href="">Inscrivez-vous</a>
+                     <a href="inscription.php">Inscrivez-vous</a>
                 </div> 
             </div>
             <div class="col-6 text-center" id="bloc_2">
@@ -48,7 +76,7 @@
                     </span>
                 </div>
                 <div id="bloc_23" >
-                    <a href="">S'inscrire</a>
+                    <a href="inscription.php">S'inscrire</a>
                 </div>
             </div>
         </div>
