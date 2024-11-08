@@ -16,12 +16,12 @@
       $lui->execute(array($nom,$mot_de_passe));
 
       if ($lui->rowCount()>0) {
-        $_SESSION['email']=$nom;
+        $_SESSION['nom']=$nom;
         $_SESSION['mot_de_passe']=$mot_de_passe;
         header("location:../html/acceuil.html");
       } else {
         echo"<div class='text-center'>";
-        echo "email ou mot de passe incorrect. Veuillez ressayer.";
+        echo "nom ou mot de passe incorrect. Veuillez ressayer.";
       }    
   }
 ?>     
