@@ -1,30 +1,51 @@
 <?php
- $host="localhost";
- $dbname="aidih_ia";
- $username="root";
- $password="";
- 
- $conn=new PDO ("mysql:host=$host; dbname=$dbname",$username,$password);
- $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+session_start();  // Démarre la session pour utiliser $_SESSION
 
-  if (isset($_POST['envoyer'])) {
-    $nom=htmlspecialchars($_POST['nom']);
-    $mot_de_passe=sha1($_POST['mot_de_passe']);
+// Connexion à la base de données (ajustez les paramètres de connexion selon votre environnement)
+    $host="localhost";
+    $dbname="aidih_ia";
+    $username="root";
+    $password="";
+    
+    $pdo=new PDO ("mysql:host=$host; dbname=$dbname",$username,$password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-      $sql="SELECT * FROM `inscription` WHERE nom=? AND mot_de_passe=?";
-      $lui=$conn->prepare($sql);
-      $lui->execute(array($nom,$mot_de_passe));
+// Vérifier si le formulaire a été soumis
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Récupérer les données du formulaire
+    $email = trim($_POST['email']);
+    $mot_de_passe = trim($_POST['mot_de_passe']);
 
-      if ($lui->rowCount()>0) {
-        $_SESSION['nom']=$nom;
-        $_SESSION['mot_de_passe']=$mot_de_passe;
-        header("location:../html/acceuil.html");
-      } else {
-        echo"<div class='text-center'>";
-        echo "nom ou mot de passe incorrect. Veuillez ressayer.";
-      }    
-  }
-?>     
+    // Préparer la requête pour récupérer l'utilisateur par son email
+    $stmt = $pdo->prepare("SELECT id, email, mot_de_passe, role FROM utilisateur WHERE email = :email LIMIT 1");
+    $stmt->bindParam(':email', $email);
+    $stmt->execute();
+
+    // Vérifier si l'utilisateur existe
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($user && password_verify($mot_de_passe, $user['mot_de_passe'])) {
+        // Le mot de passe est correct, on crée la session utilisateur
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['email'] = $user['email'];
+        $_SESSION['role'] = $user['role'];
+
+        // Redirection en fonction du rôle de l'utilisateur
+        if ($user['role'] === 'admin') {
+            header('Location: administrateur.php');  // Redirige vers la page admin
+        } elseif ($user['role'] === 'user') {
+            header('Location: utilisateur.php');   // Redirige vers la page utilisateur
+        } else {
+            header('Location: /');  // Redirige vers la page d'accueil par défaut
+        }
+        exit;
+    } else {
+        // Si l'email ou le mot de passe est incorrect
+        echo "email ou le mot de passe est incorrect. Veuillez réessayer.";
+    }
+}
+?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -49,9 +70,9 @@
                                 <h2>Connectez-vous</h2>
                                 <span>Bienvenue</span>
                             </div>
-                            <form action="" method="post">
+                            <form action="connexion.php" method="post">
                                 <div>
-                                    <input type="text" class="form-control" name="nom" placeholder="Nom utilisateur" required>
+                                    <input type="email" class="form-control" name="email" placeholder="email" required>
                                 </div>
                                 <div>
                                     <input type="password" class="form-control" name="mot_de_passe" placeholder="Mot de passe" required>
